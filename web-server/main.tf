@@ -91,6 +91,19 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
+# creating an input variable
+variable "key" {
+  description = "The key for sshing into the vm"
+  type        = string
+  default     = "~/.ssh/id_rsa"
+}
+
+variable "username" {
+  description = "The unsername of the user sshing"
+  type        = string
+  default     = "adminuser"
+}
+
 # creating a virtual machine with nginx as web server
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "web-vm"
@@ -113,10 +126,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
     storage_account_type = "Standard_LRS"
   }
 
-  admin_username = "adminuser"
+  admin_username = var.username
   admin_ssh_key {
-    username   = "adminuser"
-    public_key = file("~/.ssh/id_rsa.pub")
+    username   = var.username
+    public_key = file("${var.key}.pub")
   }
 
   # sshing into the vm, installing nginx and starting it as a systemd service
@@ -124,8 +137,8 @@ resource "azurerm_linux_virtual_machine" "vm" {
     connection {
       type        = "ssh"
       host        = self.public_ip_address
-      user        = "adminuser"
-      private_key = file("~/.ssh/id_rsa")
+      user        = var.username
+      private_key = file("${var.key}")
     }
     inline = [
       "sudo apt update",
@@ -133,4 +146,10 @@ resource "azurerm_linux_virtual_machine" "vm" {
       "sudo systemctl start nginx"
     ]
   }
+}
+
+# outputting the public_ip once the config is applied
+output "public_ip" {
+  value       = azurerm_linux_virtual_machine.vm.public_ip_address
+  description = "The Public ip address of our server"
 }
