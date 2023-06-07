@@ -112,7 +112,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "scale-set" {
   source_image_reference {
     publisher = "Canonical"
     offer     = "UbuntuServer"
-    sku       = "20.04-LTS"
+    sku       = "16.04-LTS"
     version   = "latest"
   }
 
@@ -146,8 +146,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "scale-set" {
 
     settings = <<SETTINGS
     {
-        "fileUris": ["https://raw.githubusercontent.com/Azure-Samples/compute-automation-configurations/master/automate_nginx_v2.sh"],
-        "commandToExecute": "./automate_nginx_v2.sh"
+        "commandToExecute": "apt-get update && apt-get install -y nginx && systemctl start nginx"
     }
     SETTINGS
   }
@@ -246,8 +245,10 @@ resource "azurerm_lb_rule" "lb_rule" {
   frontend_port                  = 80
   backend_port                   = 80
   frontend_ip_configuration_name = "PublicIpAddress"
+  backend_address_pool_ids = [azurerm_lb_backend_address_pool.lb_backend_address_pool.id]
+  load_distribution = "Default"
 }
 
 output "ip_address" {
-  value = azurerm_public_ip.public_ip
+  value = azurerm_public_ip.public_ip.ip_address
 }
