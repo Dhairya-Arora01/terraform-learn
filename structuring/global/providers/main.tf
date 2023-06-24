@@ -5,6 +5,14 @@ terraform {
       version = "~> 3.0.2"
     }
   }
+
+  backend "azurerm" {
+    resource_group_name = "structural"
+    storage_account_name = "dhairyasa02"
+    container_name = "statefiles"
+    key = "global/providers/global.tfstate"
+  }
+
   required_version = ">= 0.12"
 }
 
