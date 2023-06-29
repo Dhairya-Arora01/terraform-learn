@@ -1,13 +1,3 @@
-# data "terraform_remote_state" "network" {
-#   backend = "azurerm"
-#   config = {
-#     resource_group_name  = "structural"
-#     storage_account_name = "dhairyasa02"
-#     container_name       = var.container_name
-#     key                  = var.container_key
-#   }
-# }
-
 resource "azurerm_linux_virtual_machine" "vm" {
   name                  = "${var.server_name}-vm"
   resource_group_name   = "${var.server_name}-rg"

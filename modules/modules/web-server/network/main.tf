@@ -7,14 +7,14 @@ resource "azurerm_virtual_network" "vnet" {
   name                = "${var.server_name}-network-vnet"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
-  address_space       = ["10.0.0.0/16"]
+  address_space       = ["${local.address}/16"]
 }
 
 resource "azurerm_subnet" "subnet" {
   name                 = "${var.server_name}-network-subnet"
   resource_group_name  = azurerm_resource_group.rg.name
   virtual_network_name = azurerm_virtual_network.vnet.name
-  address_prefixes     = ["10.0.0.0/24"]
+  address_prefixes     = ["${local.address}/24"]
 }
 
 resource "azurerm_public_ip" "publicIp" {
@@ -34,11 +34,11 @@ resource "azurerm_network_security_group" "nsg" {
     priority                   = 100
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
+    protocol                   = local.protocol
+    source_port_range          = local.port_range
     destination_port_range     = "80"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+    source_address_prefix      = local.port_range
+    destination_address_prefix = local.port_range
   }
 
   security_rule {
@@ -46,11 +46,11 @@ resource "azurerm_network_security_group" "nsg" {
     priority                   = 200
     direction                  = "Inbound"
     access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
+    protocol                   = local.protocol
+    source_port_range          = local.port_range
     destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
+    source_address_prefix      = local.port_range
+    destination_address_prefix = local.port_range
   }
 }
 
