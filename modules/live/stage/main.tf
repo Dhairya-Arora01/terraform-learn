@@ -21,14 +21,14 @@ provider "azurerm" {
 }
 
 module "web-server-network" {
-  source = "../modules/web-server/network"
+  source = "github.com/Dhairya-Arora01/web-server-tf-module//web-server/network?ref=v0.0.1"
 
   server_name = "staging-server"
 
 }
 
 module "web-server-server" {
-  source = "../modules/web-server/services/server"
+  source = "../../modules/web-server/services/server"
 
   # assigning values to variables
   container_name = "statefiles"
