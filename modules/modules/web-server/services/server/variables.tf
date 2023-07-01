@@ -40,8 +40,7 @@ variable "publicIp" {
   type = string
 }
 
-variable "size" {
-  description = "Size of the vm"
-  type = string
-  default = "Standard_B1s"
+variable "env" {
+  description = "Environment for deployment"
+  default = "staging"
 }

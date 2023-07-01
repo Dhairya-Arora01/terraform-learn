@@ -36,4 +36,5 @@ module "web-server-server" {
   server_name    = "staging-server"
   nicId          = module.web-server-network.nicId
   publicIp       = module.web-server-network.public-ip
+  env = "staging"
 }

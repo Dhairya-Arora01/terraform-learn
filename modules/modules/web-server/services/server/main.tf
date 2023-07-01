@@ -2,7 +2,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   name                  = "${var.server_name}-vm"
   resource_group_name   = "${var.server_name}-rg"
   location              = var.location
-  size                  = var.size
+  size                  = var.env == "staging" ? "Standard_B1s" : "Standard_D2s_v3"
   network_interface_ids = [var.nicId]
 
   source_image_reference {
